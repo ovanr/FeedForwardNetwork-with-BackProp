@@ -220,7 +220,7 @@ class MultiLayerPerceptronNetwork:
       return np.tile(inputVector, (noNeurons,1)).transpose() * derivErrorNet
 
    def _backwardPassNonVec(self, outputVectors, expOutVector):
-      # updates weights in the backwards pass (as soon as delta is calulated)
+      # updates weights in the backwards pass (as soon as delta is calculated)
 
       for layerId in range(len(self.networkWeights)-1, -1, -1):
          layerWeights = self.networkWeights[layerId]
