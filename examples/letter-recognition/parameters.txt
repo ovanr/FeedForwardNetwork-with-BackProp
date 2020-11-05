@@ -1,0 +1,28 @@
+numHiddenLayerOneNeurons 100
+numHiddenLayerTwoNeurons 0
+numHiddenLayerThreeNeurons 0
+numHiddenLayerFourNeurons 0
+numInputNeurons 16
+numOutputNeurons 26
+learningRate 0.8
+
+# linear decaying of learning rate
+decayLearningRate True
+
+momentum 0.6
+outcomeCalcMethod winner-take-all
+maxIterations 2000
+
+# error rate that once reached training can stop
+minErrorRate 0.00001
+
+# with 'dataFile' the dataSet will be split 70-30
+# for test and train set accordingly 
+# dataFile examples/letter-recognition/dataset.dat
+
+# for already splitted dataSets use 'trainFile' and 'testFile'
+# note that normalisation happens within the program
+trainFile examples/letter-recognition/training.txt
+testFile examples/letter-recognition/test.txt
+
+verbose False

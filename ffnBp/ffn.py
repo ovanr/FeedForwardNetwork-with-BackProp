@@ -108,16 +108,7 @@ class FeedForwardNetwork:
          raise Exception(f"Invalid train set format at pattern {pattern}") from e
       
       else:
-         # for vecRange in [inRange, outRange]:
-         #    if vecRange[1][0] > 1:
-         #       for c in range(vecRange[1].size):
-         #          vecRange[1][c] = 15
-         #          vecRange[0][c] = 0
-         #    else:
-         #       for c in range(vecRange[1].size):
-         #          vecRange[1][c] = 1
-         #          vecRange[0][c] = 0
-         
+
          if self.verboseFlag:
             print("Input range detected: ", inRange)
             print("Output range detected: ", outRange)

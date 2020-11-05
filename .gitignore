@@ -1,6 +1,7 @@
-*.pdf
-*.txt
-*.html
+plot_error.pdf
+plot_success.pdf
+error.txt
+success.txt
 venv
 .hypothesis
 tests/__pycache__

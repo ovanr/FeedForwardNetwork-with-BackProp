@@ -1,0 +1,12 @@
+numHiddenLayerOneNeurons 2
+numHiddenLayerTwoNeurons 0
+numInputNeurons 2
+numOutputNeurons 1
+learningRate 0.6
+momentum 0.7
+outcomeCalcMethod round-each
+maxIterations 500
+minErrorRate 0.00001
+trainFile examples/xor/training.txt
+testFile examples/xor/test.txt
+verbose False
