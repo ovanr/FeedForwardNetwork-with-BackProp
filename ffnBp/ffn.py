@@ -36,7 +36,7 @@ class FeedForwardNetwork:
 
       if not isinstance(neuronsPerLayer, list) \
          or len(neuronsPerLayer) <= 1:
-         raise Exception("Invalid network topology given")
+         raise FeedForwardNetworkException("Invalid network topology given")
 
       for (layerPos,noNeurons) in enumerate(neuronsPerLayer[1:]):
          # Each neuron has +1 weight to account for the bias input
@@ -76,7 +76,7 @@ class FeedForwardNetwork:
          min = vecRange[0][c]
          max = vecRange[1][c]
          if max - min == 0:
-            raise Exception("Invalid range value 0.")
+            raise FeedForwardNetworkException("Invalid range value 0.")
 
          minMax = (vector[c] - min) / (max - min)
          vector[c] = minMax
@@ -104,8 +104,8 @@ class FeedForwardNetwork:
             outRange = (np.minimum(outRange[0], outVec), np.maximum(outRange[1], outVec))
             
 
-      except Exception as e:
-         raise Exception(f"Invalid train set format at pattern {pattern}") from e
+      except FeedForwardNetworkException as e:
+         raise FeedForwardNetworkException(f"Invalid train set format at pattern {pattern}") from e
       
       else:
 
@@ -127,7 +127,7 @@ class FeedForwardNetwork:
       if not isinstance(inputVector, np.ndarray) \
          or inputVector.shape != expShape \
          or inputVector.dtype.name != 'float64':
-            raise Exception("Invalid input vector format")
+            raise FeedForwardNetworkException("Invalid input vector format")
 
    def _testOutputVecFormat(self, outputVector):
       (noWeights, noNeurons) = self.networkWeights[-1].shape
@@ -135,10 +135,10 @@ class FeedForwardNetwork:
       if not isinstance(outputVector, np.ndarray) \
          or outputVector.shape != expShape \
          or outputVector.dtype.name != 'float64':
-            raise Exception("Invalid Output vector format")
+            raise FeedForwardNetworkException("Invalid Output vector format")
 
    @staticmethod
-   def _calcNextLayerOutput(inputVector, layerWeights):
+   def _calcLayerOutput(inputVector, layerWeights):
       # we need to extend the vector by one to 
       # account the bias input
       inputWithBias = np.append(inputVector, np.float64(1))
@@ -148,8 +148,8 @@ class FeedForwardNetwork:
    def _forwardPass(self, inputVector):
       outVectors = []
       for layerWeights in self.networkWeights:
-         (newInput, output) = self._calcNextLayerOutput(inputVector, layerWeights)
-         outVectors.append(newInput)
+         (inputWithBias, output) = self._calcLayerOutput(inputVector, layerWeights)
+         outVectors.append(inputWithBias)
          inputVector = output
 
       outVectors.append(output)
