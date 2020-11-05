@@ -3,7 +3,7 @@ import numpy as np
 
 TrainResult = namedtuple('TrainResult', 'output errorRate correctCount')
 
-class FeedForwardNetworkException(Exception):
+class MultiLayerPerceptronException(Exception):
    pass
 
 class IRandom():

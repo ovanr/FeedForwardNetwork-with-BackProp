@@ -1,5 +1,5 @@
 import numpy as np
-from .ffn import FeedForwardNetwork
+from .mlp import MultiLayerPerceptronNetwork
 import math
 import random
 
@@ -86,9 +86,9 @@ def getOutcomeCalcMethod(params):
       return None
 
    if params["outcomeCalcMethod"] == 'winner-take-all':
-      return FeedForwardNetwork._calcOutcomesWinnerTakeAll
+      return MultiLayerPerceptronNetwork._calcOutcomesWinnerTakeAll
    elif params["outcomeCalcMethod"] == 'round-each':
-      return FeedForwardNetwork._calcOutcomesRoundEach
+      return MultiLayerPerceptronNetwork._calcOutcomesRoundEach
    else:
       return None
 

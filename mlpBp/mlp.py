@@ -6,7 +6,7 @@ import random
 import functools
 import signal
 from .functions import sigintHandler, sigmoid, gaussianDecay
-from .objecttypes import FeedForwardNetworkException, \
+from .objecttypes import MultiLayerPerceptronException, \
                          IRandom, \
                          NumpyRandom, \
                          TrainResult
@@ -14,7 +14,7 @@ from .constants import DECAY_RATE, \
                        OVERFIT_START, \
                        OVERFIT_THRESH
 
-class FeedForwardNetwork:
+class MultiLayerPerceptronNetwork:
    _overfitConseq = -1
    _bestTestOutcome = 0
    _exitFlag = False
@@ -36,7 +36,7 @@ class FeedForwardNetwork:
 
       if not isinstance(neuronsPerLayer, list) \
          or len(neuronsPerLayer) <= 1:
-         raise FeedForwardNetworkException("Invalid network topology given")
+         raise MultiLayerPerceptronException("Invalid network topology given")
 
       for (layerPos,noNeurons) in enumerate(neuronsPerLayer[1:]):
          # Each neuron has +1 weight to account for the bias input
@@ -57,7 +57,7 @@ class FeedForwardNetwork:
       self.verboseFlag = verboseFlag
 
       if not outcomeCountFun:
-         self.outcomeCountFun = FeedForwardNetwork._calcOutcomesRoundEach
+         self.outcomeCountFun = MultiLayerPerceptronNetwork._calcOutcomesRoundEach
       else:
          self.outcomeCountFun = outcomeCountFun
 
@@ -76,7 +76,7 @@ class FeedForwardNetwork:
          min = vecRange[0][c]
          max = vecRange[1][c]
          if max - min == 0:
-            raise FeedForwardNetworkException("Invalid range value 0.")
+            raise MultiLayerPerceptronException("Invalid range value 0.")
 
          minMax = (vector[c] - min) / (max - min)
          vector[c] = minMax
@@ -104,8 +104,8 @@ class FeedForwardNetwork:
             outRange = (np.minimum(outRange[0], outVec), np.maximum(outRange[1], outVec))
             
 
-      except FeedForwardNetworkException as e:
-         raise FeedForwardNetworkException(f"Invalid train set format at pattern {pattern}") from e
+      except MultiLayerPerceptronException as e:
+         raise MultiLayerPerceptronException(f"Invalid train set format at pattern {pattern}") from e
       
       else:
 
@@ -115,8 +115,8 @@ class FeedForwardNetwork:
 
          for pattern in dataSet:
             (inVec, outVec) = pattern
-            normIn = FeedForwardNetwork._normaliseVector(inVec, inRange)
-            normOut = FeedForwardNetwork._normaliseVector(outVec, outRange)
+            normIn = MultiLayerPerceptronNetwork._normaliseVector(inVec, inRange)
+            normOut = MultiLayerPerceptronNetwork._normaliseVector(outVec, outRange)
             preparedSet.append((normIn, normOut))
 
          return preparedSet
@@ -127,7 +127,7 @@ class FeedForwardNetwork:
       if not isinstance(inputVector, np.ndarray) \
          or inputVector.shape != expShape \
          or inputVector.dtype.name != 'float64':
-            raise FeedForwardNetworkException("Invalid input vector format")
+            raise MultiLayerPerceptronException("Invalid input vector format")
 
    def _testOutputVecFormat(self, outputVector):
       (noWeights, noNeurons) = self.networkWeights[-1].shape
@@ -135,7 +135,7 @@ class FeedForwardNetwork:
       if not isinstance(outputVector, np.ndarray) \
          or outputVector.shape != expShape \
          or outputVector.dtype.name != 'float64':
-            raise FeedForwardNetworkException("Invalid Output vector format")
+            raise MultiLayerPerceptronException("Invalid Output vector format")
 
    @staticmethod
    def _calcLayerOutput(inputVector, layerWeights):
@@ -238,11 +238,11 @@ class FeedForwardNetwork:
                
                if layerId == len(self.networkWeights)-1:
                   # output layer
-                  derivErrorSigmoid = FeedForwardNetwork._calcDerivErrorSigmoidOutput(neuronOut, 
+                  derivErrorSigmoid = MultiLayerPerceptronNetwork._calcDerivErrorSigmoidOutput(neuronOut, 
                                                                                       expOutVector[neuron])
                else:
                   # hidden layer
-                  derivErrorSigmoid = FeedForwardNetwork._calcDerivErrorSigmoidHiddenNonVec(neuron, 
+                  derivErrorSigmoid = MultiLayerPerceptronNetwork._calcDerivErrorSigmoidHiddenNonVec(neuron, 
                                                                                             self.networkWeights[layerId+1],
                                                                                             self.networkDeltas[layerId + 1])
 
@@ -265,10 +265,10 @@ class FeedForwardNetwork:
          derivSigmoidNet = outVec*(1-outVec)
 
          if layerId == len(self.networkWeights)-1:
-            derivErrorSigmoid = FeedForwardNetwork._calcDerivErrorSigmoidOutput(outVec, expOutVector)
+            derivErrorSigmoid = MultiLayerPerceptronNetwork._calcDerivErrorSigmoidOutput(outVec, expOutVector)
             derivErrorNet = derivErrorSigmoid * derivSigmoidNet
          else:
-            derivErrorSigmoid = FeedForwardNetwork._calcDerivErrorSigmoidHiddenVec(self.networkWeights[layerId+1],
+            derivErrorSigmoid = MultiLayerPerceptronNetwork._calcDerivErrorSigmoidHiddenVec(self.networkWeights[layerId+1],
                                                                                    self.networkDeltas[layerId+1])
             derivErrorNet = derivErrorSigmoid * derivSigmoidNet
 
@@ -283,7 +283,7 @@ class FeedForwardNetwork:
       self._forwardWeightsUpdateVec(outputVectors)
 
    def _calcNewWeight(self, curWeight, tMinus1Weight, delta, inputVal):
-         derivErrorWeight = FeedForwardNetwork._calcDerivErrorWeightNonVec(inputVal,
+         derivErrorWeight = MultiLayerPerceptronNetwork._calcDerivErrorWeightNonVec(inputVal,
                                                                            delta)
          momentum = self.momentum * (curWeight - tMinus1Weight)
          newWeight = curWeight - self.learningRate*derivErrorWeight + momentum
@@ -323,7 +323,7 @@ class FeedForwardNetwork:
          # prevOutVec -> layerWeights -> outVec
          prevOutVec = outputVectors[layerId]
          
-         derivErrorWeight = FeedForwardNetwork._calcDerivErrorWeightVec(prevOutVec, 
+         derivErrorWeight = MultiLayerPerceptronNetwork._calcDerivErrorWeightVec(prevOutVec, 
                                                                         self.networkDeltas[layerId])
 
          momentum = self.momentum * (layerWeights - tMinus1LayerWeights)
@@ -391,7 +391,7 @@ class FeedForwardNetwork:
    def trainOnPattern(self, inVec, expOutVector):
       outVectors = self._forwardPass(inVec)
 
-      errorRate = FeedForwardNetwork._calcErrorRate(outVectors[-1], expOutVector)
+      errorRate = MultiLayerPerceptronNetwork._calcErrorRate(outVectors[-1], expOutVector)
       correct = self.outcomeCountFun(outVectors[-1], expOutVector)
 
       self._backwardPassVec(outVectors, expOutVector)
@@ -400,7 +400,7 @@ class FeedForwardNetwork:
 
    def trainOnDataSet(self, trainSet, testSet, epochUntil, errorRateMin):
       if epochUntil < self.epoch:
-         raise FeedForwardNetworkException("Network is already trained.")
+         raise MultiLayerPerceptronException("Network is already trained.")
 
       self._exitFlag = False
 
@@ -471,7 +471,7 @@ class FeedForwardNetwork:
 
       for (inVec, expOutVector) in testSet:
          outVectors = self._forwardPass(inVec)
-         errorRate = FeedForwardNetwork._calcErrorRate(outVectors[-1], expOutVector)
+         errorRate = MultiLayerPerceptronNetwork._calcErrorRate(outVectors[-1], expOutVector)
          correct = self.outcomeCountFun(outVectors[-1], expOutVector)
          
          if self.verboseFlag:

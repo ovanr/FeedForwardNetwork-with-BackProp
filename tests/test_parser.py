@@ -1,13 +1,13 @@
 import unittest
 import numpy as np
 
-import ffnBp.parser as p
+import mlpBp.parser as p
 from unittest.mock import Mock, patch, MagicMock, mock_open
 
 # to run this test do
-# cd 'ffnBp' and run: python -m unittest tests.test_parser -v
+# cd 'mlpBp' and run: python -m unittest tests.test_parser -v
 
-class TestFFNParser(unittest.TestCase):
+class TestMLPParser(unittest.TestCase):
    def testReadDataSet(self):
       rawDat = "0 1 2\n3 4 5\n6 7 8\n\n"
       with patch("builtins.open", mock_open(read_data=rawDat)):
@@ -145,11 +145,11 @@ class TestFFNParser(unittest.TestCase):
          'testSet'      : 2
       }
 
-      with patch('ffnBp.parser.getOutcomeCalcMethod', lambda x: None):
-         with patch('ffnBp.parser.getLayout', lambda x: []):
-            with patch('ffnBp.parser.readDataSet', lambda x:x):
-               with patch('ffnBp.parser.parseDataSet', lambda x,__,___:x):
-                  with patch('ffnBp.parser.splitDataSet', lambda x:(1,2)):
+      with patch('mlpBp.parser.getOutcomeCalcMethod', lambda x: None):
+         with patch('mlpBp.parser.getLayout', lambda x: []):
+            with patch('mlpBp.parser.readDataSet', lambda x:x):
+               with patch('mlpBp.parser.parseDataSet', lambda x,__,___:x):
+                  with patch('mlpBp.parser.splitDataSet', lambda x:(1,2)):
                      out = p.parseParams(params)
                      self.assertEqual(out, expOut)
 
@@ -181,10 +181,10 @@ class TestFFNParser(unittest.TestCase):
          'testSet'      : 2
       }
 
-      with patch('ffnBp.parser.getOutcomeCalcMethod', lambda x: None):
-         with patch('ffnBp.parser.getLayout', lambda x: []):
-            with patch('ffnBp.parser.readDataSet', lambda x:x):
-               with patch('ffnBp.parser.parseDataSet', lambda x,__,___:x):
-                  with patch('ffnBp.parser.splitDataSet', lambda x:(1,2)):
+      with patch('mlpBp.parser.getOutcomeCalcMethod', lambda x: None):
+         with patch('mlpBp.parser.getLayout', lambda x: []):
+            with patch('mlpBp.parser.readDataSet', lambda x:x):
+               with patch('mlpBp.parser.parseDataSet', lambda x,__,___:x):
+                  with patch('mlpBp.parser.splitDataSet', lambda x:(1,2)):
                      out = p.parseParams(params)
                      self.assertEqual(out, expOut)
