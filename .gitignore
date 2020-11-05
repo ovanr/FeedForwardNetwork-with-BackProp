@@ -4,4 +4,4 @@
 venv
 .hypothesis
 tests/__pycache__
-ffnbn/__pycache__
+ffnBn/__pycache__
