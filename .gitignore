@@ -1,0 +1,7 @@
+*.pdf
+*.txt
+*.html
+venv
+.hypothesis
+tests/__pycache__
+ffnbn/__pycache__
